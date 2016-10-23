@@ -19,7 +19,23 @@ import Foundation
 // write your code here
 
 
+class Person {
+    var firstName = String()
+    var lastName = String()
+    var fullName: String {
+        return "\(firstName) \(lastName)"
+    }
+    
+    init(firstName: String, lastName: String) {
+        self.firstName = firstName
+        self.lastName = lastName
+    }
+    
+    func greet(_ name: Person) -> String {
+        return "Hello, \(name.firstName)!"
+    }
 
+}
 
 
 
@@ -53,11 +69,6 @@ assert(person.fullName == "Alice Johnson", person.fullName)
  */
 
 
-
-
-
-
-
 // Test
 let friend = Person(firstName: "Phil", lastName: "Davies")
 var greeting = person.greet(friend)
@@ -81,11 +92,26 @@ extension Double {
     }
 }
 
-// write your code here
+class Transaction {
+    var type: String
+    var amount: Double
+    
+    init(type: String, amount: Double) {
+        self.type = type
+        self.amount = amount
+    }
 
-
-
-
+    var description: String {
+        var final = String()
+        if self.type == "in" {
+            final = "Transaction: credit in the amount of $\(amount.toMoney)"
+        } else if self.type == "out" {
+            final = "Transaction: debit in the amount of $\(amount.toMoney)"
+        }
+        return final
+    }
+    
+}
 
 
 
@@ -109,15 +135,6 @@ assert(transaction2.amount == 1.2, "\(transaction2.amount)")
  Note that formatting `Double`s so they have two decimal places (like money) can be a bit difficult, so a method has been added to the `Double` class for you to help you with that. Assuming `amount` is a double, you can call `double.toMoney` to get a string that formats the `Double` to two decimal places.
  */
 
-
-
-
-
-
-
-
-
-
 // Test
 assert(transaction1.description == "Transaction: credit in the amount of $10.00", transaction1.description)
 assert(transaction2.description == "Transaction: debit in the amount of $1.20", transaction2.description)
@@ -132,13 +149,43 @@ assert(transaction2.description == "Transaction: debit in the amount of $1.20", 
  
  Create an initializer for this class. It should only take one parameter: the owner of the account. When the class is first created (instantiated), the list of transactions should be empty.
  */
-// write your code here
+class BankAccount {
+    var owner: Person
+    var transactions: [Transaction]
+    
+    init(owner: Person) {
+        self.owner = owner
+        self.transactions = []
+    }
+    
+    var balance: Double {
+        var credits: Double = 0
+        var debits: Double = 0
+        
+        for transaction in transactions {
+            if transaction.type == "in" {
+                credits += transaction.amount
+            } else if transaction.type == "out" {
+                debits += transaction.amount
+            }
+        }
+        return credits - debits
+    }
+    
+    func deposit(_ deposit: Double) {
+        let transactionAmount = Transaction(type: "in", amount: deposit)
+        transactions.append(transactionAmount)
 
-
-
-
-
-
+    }
+    
+    func withdraw(_ withdrawal: Double) {
+        let transactionAmount = Transaction(type: "out", amount: withdrawal)
+        transactions.append(transactionAmount)
+    
+    }
+    
+    
+}
 
 
 
@@ -158,13 +205,6 @@ assert(personBankAccount.transactions.isEmpty)
 
 
 
-
-
-
-
-
-
-
 // Test
 personBankAccount.deposit(100.0)
 assert(personBankAccount.transactions.count == 1, "\(personBankAccount.transactions.count)")
@@ -177,15 +217,6 @@ assert(personBankAccount.transactions.count == 2, "\(personBankAccount.transacti
  
  The owner of the account also needs a way to take money out of their bank account. In the `BankAccount` class you created in Question #6, add a method called `withdraw(_:)`. This method should take a `Double` representing the amount to be withdrawn from the account as a parameter. It should create a new `Transaction` object representing the withdrawal and add it to the `BankAccount`'s `transactions` array. This method does not need to return anything.
  */
-
-
-
-
-
-
-
-
-
 
 // Test
 personBankAccount.withdraw(25.0)
